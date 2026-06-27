@@ -1,0 +1,35 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: api_gateway
+
+  cloud:
+    gateway:
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+      routes:
+
+        - id: auth_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/**
+
+        - id: sistema_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/**

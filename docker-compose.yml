@@ -1,0 +1,72 @@
+
+services:
+
+  mysql-auth:
+    image: mysql:8.0
+    container_name: mysql-auth
+
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: auth_db
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - auth_data:/var/lib/mysql
+
+  mysql-sistema:
+    image: mysql:8.0
+    container_name: mysql-sistema
+
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: educonecta_db
+
+    ports:
+      - "3308:3306"
+
+    volumes:
+      - sistema_data:/var/lib/mysql
+
+  auth_service:
+    build: ./auth_service
+    container_name: auth_service
+
+    restart: always
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - mysql-auth
+
+  sistema_service:
+    build: ./sistema_service
+    container_name: sistema_service
+
+    restart: always
+
+    ports:
+      - "8082:8082"
+
+    depends_on:
+      - mysql-sistema
+
+ # api_gateway:
+ #  build: ./api_gateway
+ #   container_name: api_gateway
+#
+ #   environment:
+ #     - SPRING_PROFILES_ACTIVE=docker
+#
+ #   ports:
+ #     - "8083:8083"
+#
+ #   depends_on:
+#      - auth_service
+ #     - sistema_service
+
+volumes:
+  auth_data:
+  sistema_data:
